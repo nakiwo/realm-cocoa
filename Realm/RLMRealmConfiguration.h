@@ -68,6 +68,9 @@ RLM_ASSUME_NONNULL_BEGIN
 /// The current schema version.
 @property (nonatomic) uint64_t schemaVersion;
 
+/// Delete Realm and auxiliary files if migration is needed.
+@property (nonatomic) BOOL deleteRealmIfMigrationNeeded;
+
 /// The block which migrates the Realm to the current version.
 @property (nonatomic, copy, nullable) RLMMigrationBlock migrationBlock;
 

@@ -47,6 +47,7 @@ namespace realm {
             std::string path;
             bool read_only = false;
             bool in_memory = false;
+            bool delete_realm_if_maigration_needed = false;
             bool cache = true;
             bool disable_format_upgrade = false;
             std::vector<char> encryption_key;

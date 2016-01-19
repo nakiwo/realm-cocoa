@@ -269,6 +269,27 @@ static void RLMRealmSetSchemaAndAlign(RLMRealm *realm, RLMSchema *targetSchema) 
 }
 
 + (instancetype)realmWithConfiguration:(RLMRealmConfiguration *)configuration error:(NSError **)error {
+    NSError *realmError = nil;
+    RLMRealm *realm = [self _realmWithConfiguration:configuration error:&realmError];
+
+    if (realmError) {
+        // FIXME: Distinguish migration exception from other exeptions
+        if (realmError.domain == RLMErrorDomain/* && realmError.code == RLMErrorFail*/) {
+            if (configuration.deleteRealmIfMigrationNeeded) {
+                NSError *ioError = nil;
+                BOOL success = [[NSFileManager defaultManager] removeItemAtPath:configuration.path error:&ioError];
+                if (success) {
+                    return [self realmWithConfiguration:configuration error:error];
+                }
+            }
+        }
+        RLMSetErrorOrThrow(realmError, error);
+    }
+
+    return realm;
+}
+
++ (instancetype)_realmWithConfiguration:(RLMRealmConfiguration *)configuration error:(NSError **)error {
     configuration = [configuration copy];
     Realm::Config& config = configuration.config;
 
@@ -373,7 +394,7 @@ static void RLMRealmSetSchemaAndAlign(RLMRealm *realm, RLMSchema *targetSchema) 
         [realm invalidate];
         realm->_realm->m_binding_context = RLMCreateBindingContext(realm);
     }
-
+    
     return RLMAutorelease(realm);
 }
 
