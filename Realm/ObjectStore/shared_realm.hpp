@@ -61,6 +61,8 @@ namespace realm {
 
             MigrationFunction migration_function;
 
+            bool delete_realm_if_maigration_needed = false;
+
             Config();
             Config(Config&&);
             Config(const Config& c);
