@@ -373,6 +373,8 @@ void RLMRealmTranslateException(NSError **error) {
                         schema = [RLMSchema.sharedSchema copy];
                         realm->_realm->update_schema(schema.objectStoreCopy, config.schema_version);
                     }
+                } else {
+                    realm->_realm->update_schema(schema.objectStoreCopy, config.schema_version);
                 }
 
                 RLMRealmSetSchemaAndAlign(realm, schema);

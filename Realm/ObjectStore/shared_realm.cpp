@@ -128,33 +128,8 @@ void Realm::init(std::shared_ptr<RealmCoordinator> coordinator)
 
     try {
         // otherwise get the schema from the group
-        auto target_schema = std::move(m_config.schema);
-        auto target_schema_version = m_config.schema_version;
         m_config.schema_version = ObjectStore::get_schema_version(read_group());
         m_config.schema = std::make_unique<Schema>(ObjectStore::schema_from_group(read_group()));
-
-        // if a target schema is supplied, verify that it matches or migrate to
-        // it, as neeeded
-        if (target_schema) {
-            if (m_config.read_only) {
-                if (m_config.schema_version == ObjectStore::NotVersioned) {
-                    throw UnitializedRealmException("Can't open an un-initialized Realm without a Schema");
-                }
-                target_schema->validate();
-                ObjectStore::verify_schema(*m_config.schema, *target_schema, true);
-                m_config.schema = std::move(target_schema);
-            }
-            else {
-                update_schema(std::move(target_schema), target_schema_version);
-            }
-
-            if (!m_config.read_only) {
-                // End the read transaction created to validation/update the
-                // schema to avoid pinning the version even if the user never
-                // actually reads data
-                invalidate();
-            }
-        }
     }
     catch (...) {
         // Trying to unregister from the coordinator before we finish
