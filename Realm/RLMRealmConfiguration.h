@@ -72,7 +72,7 @@ RLM_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) RLMMigrationBlock migrationBlock;
 
 /// Delete the Realm file if migration is needed and re-create with the new schema.
-@property (nonatomic, getter = shouldDeleteRealmIfMigrationNeeded) BOOL deleteRealmIfMigrationNeeded;
+@property (nonatomic) BOOL deleteRealmIfMigrationNeeded;
 
 /// The classes persisted in the Realm.
 @property (nonatomic, copy, nullable) NSArray *objectClasses;

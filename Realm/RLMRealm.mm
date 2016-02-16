@@ -378,6 +378,19 @@ void RLMRealmTranslateException(NSError **error) {
                 }
 
                 RLMRealmSetSchemaAndAlign(realm, schema);
+            } catch (SchemaMismatchException::SchemaMismatchException const& exception) {
+                if (configuration.deleteRealmIfMigrationNeeded) {
+                    NSError *deletiionError = nil;
+                    BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:configuration.path error:&deletiionError];
+                    if (deleted) {
+                        realm = nil;
+                        return [self realmWithConfiguration:configuration error:error];
+                    }
+                    RLMSetErrorOrThrow(deletiionError, error);
+                    return nil;
+                }
+                RLMSetErrorOrThrow(RLMMakeError(RLMException(exception)), error);
+                return nil;
             } catch (std::exception const& exception) {
                 RLMSetErrorOrThrow(RLMMakeError(RLMException(exception)), error);
                 return nil;

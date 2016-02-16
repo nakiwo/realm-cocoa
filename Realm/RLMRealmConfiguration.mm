@@ -223,12 +223,12 @@ static void RLMNSStringToStdString(std::string &out, NSString *in) {
     _config.schema_version = schemaVersion;
 }
 
-- (BOOL)shouldDeleteRealmIfMigrationNeeded {
-    return _config.delete_realm_if_maigration_needed;
+- (BOOL)deleteRealmIfMigrationNeeded {
+    return _config.delete_realm_if_migration_needed;
 }
 
 - (void)setDeleteRealmIfMigrationNeeded:(BOOL)deleteRealmIfMigrationNeeded {
-    _config.delete_realm_if_maigration_needed = deleteRealmIfMigrationNeeded;
+    _config.delete_realm_if_migration_needed = deleteRealmIfMigrationNeeded;
 }
 
 - (NSArray *)objectClasses {
